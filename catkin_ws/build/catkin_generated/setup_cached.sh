@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/test/catkin_ws/build'
+export PWD='/home/ros-truckmaker/Workspace/ROS1PythonSubscriberExample/catkin_ws/build'

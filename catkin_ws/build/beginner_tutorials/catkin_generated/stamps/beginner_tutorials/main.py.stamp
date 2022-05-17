@@ -1,15 +1,21 @@
 import rospy
-from sensor_msgs.msg import PointCloud2
+import sensor_msgs.point_cloud2
+from sensor_msgs.msg import PointCloud2, PointCloud
 import numpy as np
 from stl import mesh
 from mpl_toolkits import mplot3d
 from matplotlib import pyplot
+import time
+
+count = 0
 
 
 def callback(input_ros_msg):
-    point_cloud = input_ros_msg.points
-    # point_cloud = np.loadtxt('sample.xyz', skiprows=1)
-
+    start = time.time()
+    point_cloud_list = list()
+    for point in sensor_msgs.point_cloud2.read_points(input_ros_msg, skip_nans=True):
+        point_cloud_list.append([point[0], point[1], point[2]])
+    point_cloud = np.array(point_cloud_list)
     num_triangles= int(len(point_cloud[:]) / 3)
     data = np.zeros(num_triangles, dtype=mesh.Mesh.dtype)
     for i in range(num_triangles):
@@ -17,7 +23,9 @@ def callback(input_ros_msg):
                                     [point_cloud[i*3 + 1][0], point_cloud[i*3 + 1][1], point_cloud[i*3 + 1][2]],
                                     [point_cloud[i*3 + 2][0], point_cloud[i*3 + 2][1], point_cloud[i*3 + 2][2]]])
     m=mesh.Mesh(data)
-    m.save('figure.stl')
+    global count
+    m.save('figure_{}.stl'.format(count))
+    count = count+1
 
     # figure = pyplot.figure()
     # axes = mplot3d.Axes3D(figure)
@@ -32,6 +40,7 @@ def callback(input_ros_msg):
 
     # # Show the plot to the screen
     # pyplot.show()
+    print("Convert Time : ", time.time() - start)
 
 if __name__ == "__main__":
     rospy.init_node("test", anonymous=True)

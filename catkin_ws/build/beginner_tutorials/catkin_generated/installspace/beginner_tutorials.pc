@@ -1,4 +1,4 @@
-prefix=/home/test/catkin_ws/install
+prefix=/home/ros-truckmaker/Workspace/ROS1PythonSubscriberExample/catkin_ws/install
 
 Name: beginner_tutorials
 Description: Description of beginner_tutorials
